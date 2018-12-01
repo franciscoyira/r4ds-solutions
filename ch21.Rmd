@@ -1,0 +1,340 @@
+---
+title: "Chapter 21 - Exercises - R for Data Science"
+author: "Francisco Yira Albornoz"
+date: "19 de noviembre de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 21.2 For loops
+
+## 21.2.1 Exercises
+
+1. Write for loops to:
+  
+  1. Compute the median of every column in `mtcars`
+```{r}
+median_mtcars <- vector("double", length(mtcars))
+for (i in seq_along(mtcars)) {
+  median_mtcars[[i]] <- median(mtcars[[i]])
+}
+median_mtcars
+```
+  
+  2. Determine the type of each column in `nycflights13::flights`
+```{r}
+typecol_flights <- vector("character", length(nycflights13::flights))
+for (i in seq_along(nycflights13::flights)) {
+  typecol_flights[[i]] <- typeof(nycflights13::flights[[i]])
+}
+typecol_flights
+```
+  
+  3. Compute the number of unique values in each column of `iris`
+```{r}
+n_unique_val_iris <- vector("integer", length(iris))
+for (i in seq_along(iris)) {
+  unique_val_iris <- unique(iris[[i]])
+  n_unique_val_iris[[i]] <- length(unique_val_iris)
+}
+n_unique_val_iris
+```
+  
+  4. Generate 10 random normals for each of $\mu = -10$, $0$, $10$, and $100$
+```{r}
+means <- c(-10, 0, 10, 100)
+random_normals <- vector("list", length(means))
+for (i in seq_along(means)) {
+  random_normals[[i]] <- rnorm(10, mean = means[[i]])
+}
+random_normals
+```
+  
+2. Eliminate the for loop in each of the following examples by taking advantage of an existing function that works with vectors
+  a. 
+```{r}
+out <- ""
+for (x in letters) {
+  out <- stringr::str_c(out, x)
+}
+out
+```
+
+Alternative without for loop:
+```{r}
+stringr::str_c(letters, collapse = "")
+```
+
+  b. 
+```{r}
+x <- sample(100)
+sd <- 0
+for (i in seq_along(x)) {
+  sd <- sd + (x[i] - mean(x)) ^ 2
+}
+sd <- sqrt(sd / (length(x) - 1))
+```
+
+Alternative without for loop:
+```{r}
+sd(x)
+```
+
+  c.
+```{r eval = FALSE}
+x <- runif(100)
+out <- vector("numeric", length(x))
+out[1] <- x[1]
+for (i in 2:length(x)) {
+  out[i] <- out[i - 1] + x[i]
+}
+out
+```
+  
+```{r eval = FALSE}
+cumsum(x)
+```
+  
+3. Combine your function writing and for loop skills:
+
+  1. Write a forloop that `prints()` the lyrics to the childrenÅfs song ÅgAlice the camelÅh.
+```{r}
+names_song <- c("Alice", "Ruby", "Sally", "Felix", "Lilly", "Andy", "Larry", "Sammy")
+animals_song <- c("Camel", "Rabbit", "Sloth", "Fox", "Ladybug", "Ant", "Lizard", "Spider")
+numbers_song <- c("one", "two", "two", "four", "five", "six", "seven", "eight")
+what_they_have <- c("hump", "ears", "toes", "legs", "spots", "legs", "stripes", "legs")
+
+for (i in seq_along(names_song)) {
+  for (j in 1:4) {
+    writeLines(
+      stringr::str_c(
+        names_song[[i]],
+        " the ",
+        animals_song[[i]],
+        " has ",
+        numbers_song[[i]],
+        " ",
+        what_they_have[[i]],
+        "."
+      )
+    )
+  }
+  writeLines(stringr::str_c("Go ", names_song[[i]], " go!\n"))
+  
+}
+```
+  
+  2. Convert the nursery rhyme Ågten in the bedÅh to a function. Generalise it to any number of people in any sleeping structure.
+  
+```{r}
+library(stringr)
+library(english)
+
+people_fell_song <-
+  function(n_people = 10,
+           sleeping_structure = "bed") {
+    # Input validation
+    if (n_people < 1)
+      stop("n_people should be greater than zero")
+    
+    n_people <- as.integer(n_people)
+    if (is.na(n_people))
+      stop("n_people should be a valid integer")
+    
+    
+    for (i in 1:n_people) {
+      # Turning number of people into a word
+      people_in <- as.english(n_people + 1 - i)
+      
+      # Handling special case for first strophe
+      if (i == 1) {
+        writeLines("Here we go!")
+      } else {
+        writeLines(str_c(str_to_title(people_in), "!"))
+      }
+      
+      # Lines that appear in every strophe
+      writeLines(str_c("There were ", people_in, " in the ", sleeping_structure))
+      writeLines("and the little one said,")
+      
+      # Handling special case for last strophe
+      if (people_in > 1) {
+        writeLines('"Roll over, roll over."')
+        writeLines("So they all rolled over and one fell out.\n")
+      } else {
+        writeLines('"Good night!"')
+      }
+      
+    }
+  }
+
+people_fell_song(5, "sofa")
+```
+  
+  3. Convert the song Åg99 bottles of beer on the wallÅh to a function. Generalise to any number of any vessel containing any liquid on any surface.
+  
+```{r}
+library(stringr)
+
+song_bottles_beer <- function(n_vessels = 99, vessel = "bottles", liquid = "beer", surface = "wall") {
+    # Input validation
+    if (n_vessels < 1)
+      stop("n_vessels should be greater than zero")
+    
+    n_vessels <- as.integer(n_vessels)
+    if (is.na(n_vessels))
+      stop("n_vessels should be a valid integer")
+    
+    
+    for (i in 1:(n_vessels + 1)) {
+      # Turning number of bottles into a word
+      vessels_left <- (n_vessels + 1 - i)
+      
+      if (vessels_left >= 1) {
+        writeLines(str_c(vessels_left, " ", vessel, " of ", liquid, " on the ", surface, ", ", vessels_left, " ", vessel, " of ", liquid, "."))
+      }
+      
+      if (vessels_left >= 2) {
+        writeLines(str_c("Take one down and pass it around, ", (vessels_left - 1), " ", vessel, " of ", liquid, " on the ", surface, ".\n"))
+      }
+      
+      if (vessels_left == 1) {
+        writeLines(str_c("Take one down and pass it around, no more ", vessel," of ", liquid," on the ", surface,".\n"))
+      }
+      
+      if (vessels_left == 0) {
+        writeLines(str_c("No more ", vessel," of ", liquid," on the ", surface,", no more ", vessel, " of ", liquid, "."))
+        writeLines(str_c("Go to the store and buy some more, ", n_vessels," ", vessel," of ", liquid," on the ", surface,"."))
+      } 
+        
+   
+      
+    }
+  }
+
+song_bottles_beer(5, vessel = "glasses", liquid = "water", surface = "table")
+```
+  
+  
+4. ItÅfs common to see for loops that donÅft preallocate the output and instead increase the length of a vector at each step:
+
+```
+output <- vector("integer", 0)
+for (i in seq_along(x)) {
+  output <- c(output, lengths(x[[i]]))
+}
+output
+
+```
+How does this affect performance? Design and execute an experiment.
+
+```{r}
+library(microbenchmark)
+
+func_wo_preallocate <- function(x) {
+  output <- vector("integer", 0)
+  for (i in seq_along(x)) {
+    output <- c(output, lengths(x[[i]]))
+  }
+  output
+}
+
+func_with_preallocate <- function(x) {
+  output <- vector("integer", length(x))
+  for (i in seq_along(x)) {
+    output[[i]] <- lengths(x[[i]])
+  }
+ output  
+}
+
+test_vec <- 1:1000
+
+microbenchmark(func_wo_preallocate(test_vec),
+               func_with_preallocate(test_vec),
+               times = 1000L)
+
+
+```
+
+## 21.3 For loop variations
+
+###  21.3.5 Exercises
+
+1. Imagine you have a directory full of CSV files that you want to read in. You have their paths in a vector, `files <- dir("data/", pattern = "\\.csv$", full.names = TRUE)`, and now want to read each one with `read_csv()`. Write the for loop that will load them into a single data frame.
+
+```
+output <- vector("list", length(files))
+for (i in seq_along(files)) {
+  output[[i]] <- read_csv(files[[i]])
+}
+
+my_big_df <- dplyr::bind_rows(output)
+```
+2. What happens if you use `for (nm in names(x))` and `x` has no names? What if only some of the elements are named? What if the names are not unique?
+
+```{r}
+my_vec <- 1:5
+names(my_vec) <- c("a", "a", "b", "c")
+
+for (nm in names(my_vec)) {
+  print(my_vec[[nm]])
+}
+```
+
+If the names are not unique then the subscripting will return the *first element with that name* each time that the duplicated name appears. If only some of the elements are named, there will be an error.
+
+3. Write a function that prints the mean of each numeric column in a data frame, along with its name. For example, `show_mean(iris)` would print:
+
+```
+show_mean(iris)
+#> Sepal.Length: 5.84
+#> Sepal.Width:  3.06
+#> Petal.Length: 3.76
+#> Petal.Width:  1.20
+```
+(Extra challenge: what function did I use to make sure that the numbers lined up nicely, even though the variable names had different lengths?)
+
+```{r}
+
+show_mean <- function(x) {
+  
+  for (i in seq_along(mtcars)) {
+    mean_col <- round(mean(mtcars[[i]]), 2)
+    
+    name_with_colon <- str_c(names(mtcars)[[i]], ":")
+    
+    name_pad <- str_pad(name_with_colon, width = 6, side = "right")
+    
+    print(str_c(name_pad, mean_col, sep = " "))
+  }
+  
+}
+
+show_mean(mtcars)
+
+```
+
+4. What does this code do? How does it work?
+
+```
+trans <- list( 
+  disp = function(x) x * 0.0163871,
+  am = function(x) {
+    factor(x, labels = c("auto", "manual"))
+  }
+)
+for (var in names(trans)) {
+  mtcars[[var]] <- trans[[var]](mtcars[[var]])
+}
+```
+`trans` is a list where each element is a function, designed to do a certain transformation over a specific column in `mtcars`. Also, each function is named after the column over which it is supossed to do the transformation.
+
+The `for` cycle selects the corresponding columns in `mtcars` using the functions names, and then replaces them with the modified versions, which are obtained applying the corresponding from the list.
+
+### 21.4.1 Exercises
+
+Continuar aca
+https://r4ds.had.co.nz/iteration.html#exercises-57
