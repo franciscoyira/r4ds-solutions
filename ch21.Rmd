@@ -334,7 +334,67 @@ for (var in names(trans)) {
 
 The `for` cycle selects the corresponding columns in `mtcars` using the functions names, and then replaces them with the modified versions, which are obtained applying the corresponding from the list.
 
+## 21.4 For loops vs. functionals
+
 ### 21.4.1 Exercises
 
-Continuar aca
-https://r4ds.had.co.nz/iteration.html#exercises-57
+1. Read the documentation for `apply()`. In the 2d case, what two for loops does it generalise?
+
+It generalises two nested for loops iterating over a two dimensions array.
+
+2. Adapt `col_summary()` so that it only applies to numeric columns. You might want to start with an `is_numeric()` function that returns a logical vector that has a TRUE corresponding to each numeric column.
+
+```{r}
+is_col_numeric <- function(df) {
+  out <- vector("logical", length(df))
+  for (i in seq_along(df)) {
+    out[[i]] <- class(df[[i]]) == "numeric"
+  }
+  out
+}
+
+
+col_summary <- function(df, fun) {
+  subset_df <- df[is_col_numeric(df)]
+  out <- vector("double", length(subset_df))
+  for (i in seq_along(subset_df)) {
+    out[i] <- fun(subset_df[[i]])
+  }
+  out
+}
+
+col_summary(iris, mean)
+```
+
+## 21.5 The map functions
+
+### 21.5.3 Exercises
+
+1. Write code that uses one of the map functions to:
+
+  1. Compute the mean of every column in `mtcars`.
+```{r}
+map_dbl(mtcars, mean)
+```
+  
+  2. Determine the type of each column in `nycflights13::flights`
+```{r}
+map_chr(mtcars, typeof)
+```
+  
+  3. Compute the number of unique values in each column of `iris`
+  
+```{r}
+map_dbl(iris, ~length(unique(.)))
+```
+  
+  4. Generate 10 random normals for each of $\mu = -10$, $0$, $10$, and $100$
+  
+```{r}
+means <- c(-10, 0, 10, 100)
+map(means, ~rnorm(10, mean = .))
+```
+  
+
+Continuar aca 
+https://r4ds.had.co.nz/iteration.html#exercises-58
