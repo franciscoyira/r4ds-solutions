@@ -1,0 +1,14 @@
+---
+title: "Chapter 23 - Exercises - R for Data Science"
+author: "Francisco Yira Albornoz"
+date: "5 de diciembre de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(modelr)
+```
+
+Continuar aca https://r4ds.had.co.nz/model-basics.html#exercises-60 
