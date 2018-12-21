@@ -1,0 +1,29 @@
+---
+title: "Chapter 24 - Exercises - R for Data Science"
+author: "Francisco Yira Albornoz"
+date: "13-12-2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(modelr)
+options(na.action = na.warn)
+
+library(nycflights13)
+library(lubridate)
+```
+
+
+## 24.2 Why are low quality diamonds more expensive?
+
+### 24.3.3 Exercises
+
+1. In the plot of `lcarat` vs. `lprice`, there are some bright vertical strips. What do they represent?
+
+![imagen](bright_lines.png)
+
+
+
+https://r4ds.had.co.nz/model-building.html#exercises-63 
