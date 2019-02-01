@@ -22,8 +22,46 @@ library(lubridate)
 
 1. In the plot of `lcarat` vs. `lprice`, there are some bright vertical strips. What do they represent?
 
-![imagen](bright_lines.png)
+```{r}
+diamonds2 <- diamonds %>% 
+  filter(carat <= 2.5) %>% 
+  mutate(lprice = log2(price), lcarat = log2(carat))
 
+ggplot(diamonds2, aes(lcarat, lprice)) + 
+  geom_hex(bins = 50)
+```
 
+```{r}
+ggplot(diamonds2, aes(x = lcarat)) +
+  geom_histogram(binwidth = 0.05)
+```
+
+It looks like bright areas in the first plot represent peaks or concentracions in the distribution of `lcarat` variable. Since data is asymetrically distributed around these concentrations, they may be caused by caused by "upward rounding" in data entry.
+
+2. If `log(price) = a_0 + a_1 * log(carat)`, what does that say about the relationship between `price` and `carat`?
+
+It means that `price` grows as `carat` grows following the relationship `e^(a_0) * carat^(a_1)`.
+
+3. Extract the diamonds that have very high and very low residuals. Is there anything unusual about these diamonds? Are they particularly bad or good, or do you think these are pricing errors?
+
+```{r}
+mod_diamond2 <- lm(lprice ~ lcarat + color + cut + clarity, data = diamonds2)
+
+diamonds2 <- diamonds2 %>% 
+  add_residuals(mod_diamond2, "lresid2")
+
+diamonds2 %>% 
+  filter(abs(lresid2) > 1) %>% 
+  add_predictions(mod_diamond2) %>% 
+  mutate(pred = round(2 ^ pred)) %>% 
+  select(price, pred, carat:table, x:z) %>% 
+  arrange(price)
+```
+
+They mostly look like pricing errors. The prices predicted by the model are reasonable given all other variables. However, these low/high residuals could be a syntom of non-linear or interactive effects of some variables on diamonds price.
+
+4. Does the final model, `mod_diamond2`, do a good job of predicting diamond prices? Would you trust it to tell you how much to spend if you were buying a diamond?
+
+It appropriately captures the linear effects of the variables that affect the price, and since there are relatively few observations with large residuals, we could say that non-linear effects and interactions are not relevant in most cases. I would say the the final model sets a good benchmark of how much should we expect to pay for a diamond of certain characteristics.
 
 https://r4ds.had.co.nz/model-building.html#exercises-63 
