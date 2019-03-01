@@ -1,0 +1,62 @@
+---
+title: "Chapter 27 - Exercises - R for Data Science"
+author: "Francisco Yira Albornoz"
+date: "09-02-2019"
+output: html_document
+---
+
+## 27.3 Text formatting with R Markdown
+
+### 27.3.1 Exercises
+
+2. Using the R Markdown quick reference, figure out how to:
+
+    1. Add a footnote.
+    2. Add a horizontal rule.
+    3. Add a block quote.
+  
+> This is a block quote
+
+-----
+This is a horizontal rule
+
+This is a footnote [^1] 
+
+[^1]: Here is the footnote. 
+
+3. Copy and paste the contents of `diamond-sizes.Rmd` from https://github.com/hadley/r4ds/tree/master/rmarkdown in to a local R markdown document. Check that you can run it, then add text after the frequency polygon that describes its most striking features.
+
+## 27.4 Code chunks
+
+### 27.4.7 Exercises
+
+(answers in `diamond-sizes.Rmd` inside this repo)
+
+1. Add a section that explores how diamond sizes vary by cut, colour, and clarity. Assume you’re writing a report for someone who doesn’t know R, and instead of setting `echo = FALSE` on each chunk, set a global option.
+
+2. Add a section that describes the largest 20 diamonds, including a table that displays their most important attributes.
+
+3. Modify `diamonds-sizes.Rmd` to use `comma()` to produce nicely formatted output. Also include the percentage of diamonds that are larger than 2.5 carats.
+
+4. Set up a network of chunks where `d` depends on `c` and `b`, and both `b` and `c` depend on `a`. Have each chunk print `lubridate::now()`, set `cache = TRUE`, then verify your understanding of caching.
+
+```{r a}
+lubridate::now()
+```
+
+```{r b, dependson="a"}
+lubridate::now()
+```
+
+```{r c, dependson="a"}
+lubridate::now()
+```
+
+```{r d, dependson=c("b", "c"), cache=TRUE}
+lubridate::now()
+```
+
+
+
+Continuar en:
+https://r4ds.had.co.nz/r-markdown.html#exercises-70 

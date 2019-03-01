@@ -1,0 +1,80 @@
+---
+title: "Diamond sizes"
+date: 2016-08-25
+output: html_document
+---
+  
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE
+)
+library(ggplot2)
+library(dplyr)
+smaller <- diamonds %>% 
+  filter(carat <= 2.5)
+comma <- function(x) format(x, digits = 2, big.mark = ",")
+```
+
+We have data about `r nrow(diamonds)` diamonds. Only `r nrow(diamonds) - nrow(smaller)` are larger than 2.5 carats (this is `r comma((nrow(diamonds) - nrow(smaller))/nrow(diamonds))`% of all the diamonds in the original dataset). The distribution of the remainder is shown below:
+  
+```{r, echo = FALSE}
+smaller %>% 
+  ggplot(aes(carat)) + 
+  geom_freqpoly(binwidth = 0.01)
+```
+
+It is surprising that there is so much concentration of diamonds in certatin values of carat. Also, the values of carat where diamonds are concentrated seem to be "round" numbers. This suggest that may be human bias in the data entry process.
+
+## Diamond size by color, cut and clarity
+
+```{r}
+ggplot(smaller, aes(color, carat)) +
+  geom_boxplot()
+```
+
+```{r}
+ggplot(smaller, aes(clarity, carat)) +
+  geom_boxplot()
+```
+
+```{r}
+ggplot(smaller, aes(cut, carat)) +
+  geom_boxplot()
+```
+
+We see that when clarity, color, and cut are "worse", the average diamond size (carat) tends to be larger.
+
+## Larger diamomds
+
+These are all the diamonds with carat larger than 3.
+```{r}
+larger <- diamonds %>% 
+   top_n(20, carat) %>% 
+   arrange(desc(carat))
+
+knitr::kable(larger)
+```
+
+Below is shown how the larger diamonds are distributed by cut, clarity and color.
+```{r}
+knitr::kable(
+  larger %>%
+      count(cut)
+)
+```
+
+```{r}
+knitr::kable(
+  larger %>%
+    count(color)
+)
+```
+
+```{r}
+knitr::kable(
+  larger %>%
+    count(clarity)
+)
+```
+
+We see that most of the larger diamonds have bad color and clarity. However, there are many of them with good cut.
