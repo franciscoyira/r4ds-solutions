@@ -1,0 +1,66 @@
+---
+title: "Chapter 28 - Exercises - R for Data Science"
+author: "Francisco Yira Albornoz"
+date: "02-03-2019"
+output: html_document
+---
+
+```{r setup}
+library(tidyverse)
+library(modelr)
+```
+
+
+## 28.2 Label
+
+### 28.2.1 Exercises
+
+1. Create one plot on the fuel economy data with customised `title`, `subtitle`, `caption`, `x`, `y`, and `colour` labels.
+
+```{r}
+ggplot(mpg, aes(displ, hwy, color = as.factor(year))) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  labs(
+    title = "In 2008 cars tend to be more efficient, controlling by engine size",
+    subtitle = "However, the magnitude of the difference is small",
+    caption = "Data from fueleconomy.gov",
+    x = "Engine displacement (L)",
+    y = "Highway fuel economy (mpg)",
+    colour = "Year"
+  )
+```
+
+2. The `geom_smooth()` is somewhat misleading because the `hwy` for large engines is skewed upwards due to the inclusion of lightweight sports cars with big engines. Use your modelling tools to fit and display a better model.
+
+```{r}
+model_mpg <- lm(hwy ~ class + displ, data = mpg)
+
+mpg_pred <- mpg %>% 
+  add_predictions(model = model_mpg, var = "pred")
+
+ggplot(mpg, aes(displ, hwy, colour = class)) +
+  geom_point() +
+  geom_line(data = mpg_pred, aes(y = pred)) +
+  labs(
+    x = "Engine displacement (L)",
+    y = "Highway fuel economy (mpg)",
+    colour = "Car type"
+  )
+```
+
+3. Take an exploratory graphic that you’ve created in the last month, and add informative titles to make it easier for others to understand.
+```{r}
+starwars %>% 
+  mutate(gender = replace_na(gender, "NA"),
+         gender = fct_lump(gender, n = 2)) %>% 
+  ggplot(aes(gender, height)) +
+  geom_boxplot() +
+  labs(
+    title = "Males tend to be taller than females in the Star Wars universe",
+    subtitle = "However, there is more height dispersion in males than in other genders",
+    y = "Height (cm)"
+  )
+```
+
+Continuar acá: https://r4ds.had.co.nz/graphics-for-communication.html#annotations 

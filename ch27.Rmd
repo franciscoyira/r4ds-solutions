@@ -55,8 +55,3 @@ lubridate::now()
 ```{r d, dependson=c("b", "c"), cache=TRUE}
 lubridate::now()
 ```
-
-
-
-Continuar en:
-https://r4ds.had.co.nz/r-markdown.html#exercises-70 
