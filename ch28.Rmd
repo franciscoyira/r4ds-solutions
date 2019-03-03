@@ -63,4 +63,100 @@ starwars %>%
   )
 ```
 
+## 28.3 Annotations
+
+### 28.3.1 Exercises
+
+1. Use `geom_text()` with infinite positions to place text at the four corners of the plot.
+
+Top-right:
+```{r}
+label <- tibble(
+  displ = Inf,
+  hwy = Inf,
+  label = "Increasing engine size is \nrelated to decreasing fuel economy."
+)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_text(aes(label = label), data = label, vjust = "top", hjust = "right")
+```
+
+Top-left:
+```{r}
+label <- tibble(
+  displ = -Inf,
+  hwy = Inf,
+  label = "Increasing engine size is \nrelated to decreasing fuel economy."
+)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_text(aes(label = label), data = label, vjust = "top", hjust = "left")
+```
+
+Bottom-left:
+```{r}
+label <- tibble(
+  displ = -Inf,
+  hwy = -Inf,
+  label = "Increasing engine size is \nrelated to decreasing fuel economy."
+)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_text(aes(label = label), data = label, vjust = "bottom", hjust = "left")
+```
+
+Bottom-right:
+```{r}
+label <- tibble(
+  displ = Inf,
+  hwy = -Inf,
+  label = "Increasing engine size is \nrelated to decreasing fuel economy."
+)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_text(aes(label = label), data = label, vjust = "bottom", hjust = "right")
+```
+
+2. Read the documentation for `annotate()`. How can you use it to add a text label to a plot without having to create a tibble?
+
+This function allows us to directly put an annotation in a plot by specifying the position coordinates in the function call, as numeric vectors. An example:
+
+```{r}
+p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point()
+p + annotate("text", x = 4, y = 25, label = "Some text")
+```
+
+3. How do labels with `geom_text()` interact with faceting? How can you add a label to a single facet? How can you put a different label in each facet? (Hint: think about the underlying data.)
+
+```{r}
+best_in_class <- mpg %>%
+  group_by(class) %>%
+  filter(row_number(desc(hwy)) == 1)
+
+label <- mpg %>%
+  summarise(
+    displ = max(displ),
+    hwy = max(hwy),
+    label = "Increasing engine size is \nrelated to decreasing fuel economy."
+  )
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_text(aes(label = model), data = best_in_class) +
+  geom_text(aes(label = label), data = label, vjust = "top", hjust = "right") +
+  facet_wrap(~ cyl)
+```
+
+Labels are associated with specific data points in a tibble/dataframe. If the tibble that contain the labels has a column with the variable used for faceting, then the labels will be displayed in the corresponding facet. Otherwise, the label will be repeated in all facets.
+
+Therefore, to put a different label in each facet we need to create a tibble with a column that indicates in which facet should be displayed each label.
+
+4. What arguments to `geom_label()` control the appearance of the background box?
+
+5. What are the four arguments to `arrow()`? How do they work? Create a series of plots that demonstrate the most important options.
+
 Continuar acá: https://r4ds.had.co.nz/graphics-for-communication.html#annotations 
