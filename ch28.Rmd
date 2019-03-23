@@ -157,6 +157,109 @@ Therefore, to put a different label in each facet we need to create a tibble wit
 
 4. What arguments to `geom_label()` control the appearance of the background box?
 
+`label.padding` to control the amount of padding around the label, `label.r` to control the radius of the rounded corners, and `label.size` to control the size of the label border.
+
 5. What are the four arguments to `arrow()`? How do they work? Create a series of plots that demonstrate the most important options.
 
-Continuar acá: https://r4ds.had.co.nz/graphics-for-communication.html#annotations 
+The `arrow()` function creates an object that acts as input for the `arrow` argument in `geom_segment()`. `arrow()` has four arguments:
+
+  * `angle` to specify the aperture angle in the arrow head (in degrees).
+  * `length` to specify the length of the arrow head.
+  * `ends` to specify in which end of the line/segment should the arrow head appear.
+  * `type` to specify if the arrow head should be an open or closed triangle.
+  
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_segment(aes(x = 5.5, y = 35, xend = 6.15, yend = 27), 
+               arrow = arrow())
+```
+
+  
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_segment(aes(x = 5.5, y = 35, xend = 6.15, yend = 27), 
+               arrow = arrow(angle = 10, type = "closed"))
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_segment(aes(x = 5.5, y = 35, xend = 6.15, yend = 27), 
+               arrow = arrow(angle = 45, type = "open", unit(0.15, "inches")))
+```
+
+## 28.4 Scales
+
+### 28.4.4 Exercises
+
+1. Why doesn’t the following code override the default scale?
+
+```{r}
+df <- tibble(
+  x = rnorm(10000),
+  y = rnorm(10000)
+)
+
+ggplot(df, aes(x, y)) +
+  geom_hex() +
+  scale_colour_gradient(low = "white", high = "red") +
+  coord_fixed()
+```
+
+Because the aesthetic we want to change is `fill`, not `colour`. We can override the default scale by using `scale_fill_gradient`.
+
+2. What is the first argument to every scale? How does it compare to `labs()`?
+
+`name` is the first argument in every scale function. Its default value is `waiver()` which is a function that returns the name of the first variable that was mapped to that aesthetic.
+
+In comparison, the first argument in `labs()` is a set of name-value pairs used to rename the scales (where "name" should be an aesthetic included in the plot).
+
+3. Change the display of the presidential terms by:
+
+  1. Combining the two variants shown above.
+  2. Improving the display of the y axis. 
+  3. Labelling each term with the name of the president. 
+  4. Adding informative plot labels. 
+  5. Placing breaks every 4 years (this is trickier than it seems!).
+
+```{r}
+start_year_plot <- year(min(presidential$start))
+end_year_plot <- year(max(presidential$start))
+seq_years <- seq(start_year_plot, end_year_plot, by = 4)
+
+fouryears <- lubridate::make_date(seq_years, 1, 1)
+
+presidential_plot <- presidential %>%
+  mutate(id = 33 + row_number(),
+         label_period = str_c(name, " (", id, ")"))
+
+ggplot(presidential_plot, aes(start, id, colour = party)) +
+  geom_point() +
+  geom_segment(aes(xend = end, yend = id)) +
+  scale_colour_manual(name = "Party",
+                      values = c(Republican = "red", Democratic = "blue")) +
+  scale_y_continuous(
+    name = NULL,
+    labels = presidential_plot$label_period,
+    breaks = presidential_plot$id,
+    minor_breaks = NULL
+  ) +
+  scale_x_date(
+    NULL,
+    breaks = presidential_plot$start,
+    date_labels = "'%y",
+    minor_breaks = fouryears
+  ) +
+  labs(title = "Terms of US Presidents",
+       subtitle = "Eisenhower (34) to Obama (44th)")
+```
+
+4. Use `override.aes` to make the legend on the following plot easier to see.
+
+```{r}
+ggplot(diamonds, aes(carat, price)) +
+  geom_point(aes(colour = cut), alpha = 1/20) +
+  guides(colour = guide_legend(override.aes = list(alpha = 1)))
+```
