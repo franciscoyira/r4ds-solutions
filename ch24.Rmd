@@ -1,8 +1,12 @@
 ---
-title: "Chapter 24 - Exercises - R for Data Science"
+title: "Chapter 23 - Exercises - R for Data Science"
 author: "Francisco Yira Albornoz"
-date: "13-12-2018"
-output: html_document
+date: "December 13th, 2018"
+output:
+  github_document:
+    toc: true
+    toc_depth: 4
+    df_print: tibble
 ---
 
 ```{r setup, include=FALSE}
@@ -127,12 +131,13 @@ It looks like the model with terms interactions in all weekdays performs better 
 4. Create a new `wday` variable that combines the day of week, term (for Saturdays), and public holidays. What do the residuals of that model look like?
 
 ```{r}
-holidays <- ymd(20130101, 20130121, 20130218, 20130416, 20130512, 20130527, 20130616, 20130704, 20130902, 20131014, 20131111, 20131128, 20131129, 20131225)
+holidays <- lubridate::ymd(20130101, 20130121, 20130218, 20130416, 20130512, 20130527, 20130616, 20130704, 20130902, 20131014, 20131111, 20131128, 20131129, 20131225)
 
 daily <- daily %>% 
-  mutate(wday3 = case_when(
-    date %in% holidays ~ str_c(wday2, "_holiday"),
-    TRUE ~ wday2
+  mutate(wday3 = if_else(
+    date %in% holidays,
+    str_c(wday2, "_holiday"),
+    as.character(wday2)
   ))
 
 mod3 <- MASS::rlm(n ~ wday3, data = daily)
@@ -179,7 +184,7 @@ daily %>%
 
 This new model is not clearly better than our original model with interactions between `wday` and `term`. A reason for this could be that it tries to fit smooth curves the data, but we see that there are abrupt changes in air traffic in some periods.
 
-7. We hypothesised that people leaving on Sundays are more likely to be business travellers who need to be somewhere on Monday. Explore that hypothesis by seeing how it breaks down based on distance and time: if itÅfs true, youÅfd expect to see more Sunday evening flights to places that are far away.
+7. We hypothesised that people leaving on Sundays are more likely to be business travellers who need to be somewhere on Monday. Explore that hypothesis by seeing how it breaks down based on distance and time: if it's true, you'd expect to see more Sunday evening flights to places that are far away.
 
 ```{r}
 flights %>% 
@@ -209,9 +214,9 @@ flights %>%
   geom_boxplot()
 ```
 
-We see a subtle increase in distance traveled around 17 and 19 hr. of Sunday.
+We see a subtle increase in distance travelled around 17 and 19 hr. of Sunday.
 
-8. ItÅfs a little frustrating that Sunday and Saturday are on separate ends of the plot. Write a small function to set the levels of the factor so that the week starts on Monday.
+8. It's a little frustrating that Sunday and Saturday are on separate ends of the plot. Write a small function to set the levels of the factor so that the week starts on Monday.
 
 ```{r}
 order_wdays <- function(data) {
