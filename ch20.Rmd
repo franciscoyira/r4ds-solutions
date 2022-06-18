@@ -1,12 +1,17 @@
 ---
-title: "Chapter 20 - Excersises - R for Data Science"
+title: "Chapter 20 - Exercises - R for Data Science"
 author: "Francisco Yira Albornoz"
-date: "12 de octubre de 2018"
-output: html_document
+date: "October 12th 2018"
+output:
+  github_document:
+    toc: true
+    toc_depth: 4
+    df_print: tibble
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
 ```
 
 # 20.3 Important types of atomic vector
@@ -167,7 +172,7 @@ even_numbers <- function(x) {
 
 `x[x <= 0]` will convert `NaN` values in `NA`, since we "don't know" if `NaN` is less or equal than zero. However, `x[-which(x > 0)]` will return  the original `NaN` values. Why? Because in the expression we're just excluding all the values where `x > 0` evaluates to `TRUE` (or viceversa, keeping "as is" the values where `x > 0` evaluates to anything else). Since `NaN > 0` doesn't evaluates to `TRUE`, the value is returned without being converted to `NA`.
 
-6. What happens when you subset with a positive integer thatÅfs bigger than the length of the vector? What happens when you subset with a name that doesnÅft exist?
+6. What happens when you subset with a positive integer that's bigger than the length of the vector? What happens when you subset with a name that doesn't exist?
 
 It return a missing value (`NA`).
 
@@ -191,12 +196,12 @@ x["hola"]
     
 !["List 2"](list2.png)
     
-2. What happens if you subset a tibble as if youÅfre subsetting a list? What are the key differences between a list and a tibble?
+2. What happens if you subset a tibble as if you're subsetting a list? What are the key differences between a list and a tibble?
 
 Subsetting should work the same way for tibbles and lists most of the time, since tibbles are just augmented lists. See below:
 
 ```{r}
-mtcars <- as_tibble(mtcars)
+mtcars <- tibble::as_tibble(mtcars)
 
 mtcars[1:2] #should return a tibble (list) with two columns (atomic vectors)
 mtcars[3:4][1] #should return a tibble with the first column from a tibble with the 3rd and 4th columns of mtcars
@@ -217,7 +222,7 @@ It returns an atomic double vector with classes "hms" and "diffftime". The retur
 
 2. Try and make a tibble that has columns with different lengths. What happens?
 
-```{r}
+```{r, error=TRUE}
 tibble(
   a = 1:10,
   b = 1:20,
