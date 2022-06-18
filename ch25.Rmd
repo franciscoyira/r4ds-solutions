@@ -1,8 +1,12 @@
 ---
 title: "Chapter 25 - Exercises - R for Data Science"
 author: "Francisco Yira Albornoz"
-date: "08-02-2019"
-output: html_document
+date: "February 8th, 2019"
+output:
+  github_document:
+    toc: true
+    toc_depth: 4
+    df_print: tibble
 ---
 
 ```{r setup, include=FALSE}
