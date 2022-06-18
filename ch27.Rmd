@@ -1,8 +1,12 @@
 ---
 title: "Chapter 27 - Exercises - R for Data Science"
 author: "Francisco Yira Albornoz"
-date: "09-02-2019"
-output: html_document
+date: "February 9th, 2019"
+output:
+  github_document:
+    toc: true
+    toc_depth: 4
+    df_print: tibble
 ---
 
 ## 27.3 Text formatting with R Markdown
