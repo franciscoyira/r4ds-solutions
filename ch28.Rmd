@@ -1,9 +1,14 @@
 ---
 title: "Chapter 28 - Exercises - R for Data Science"
 author: "Francisco Yira Albornoz"
-date: "02-03-2019"
-output: html_document
+date: "March 2nd, 2019"
+output:
+  github_document:
+    toc: true
+    toc_depth: 4
+    df_print: tibble
 ---
+
 
 ```{r setup}
 library(tidyverse)
@@ -225,8 +230,8 @@ In comparison, the first argument in `labs()` is a set of name-value pairs used 
   5. Placing breaks every 4 years (this is trickier than it seems!).
 
 ```{r}
-start_year_plot <- year(min(presidential$start))
-end_year_plot <- year(max(presidential$start))
+start_year_plot <- lubridate::year(min(presidential$start))
+end_year_plot <- lubridate::year(max(presidential$start))
 seq_years <- seq(start_year_plot, end_year_plot, by = 4)
 
 fouryears <- lubridate::make_date(seq_years, 1, 1)
