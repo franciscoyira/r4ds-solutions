@@ -1,8 +1,12 @@
 ---
 title: "Chapter 23 - Exercises - R for Data Science"
 author: "Francisco Yira Albornoz"
-date: "5 de diciembre de 2018"
-output: html_document
+date: "December 5th 2018"
+output:
+  github_document:
+    toc: true
+    toc_depth: 4
+    df_print: tibble
 ---
 
 ```{r setup, include=FALSE}
@@ -62,7 +66,7 @@ coefs_model
 
 The estimations are not very different when using the mean-absolute distance.
 
-3. One challenge with performing numerical optimisation is that itÅfs only guaranteed to find one local optimum. WhatÅfs the problem with optimising a three parameter model like this?
+3. One challenge with performing numerical optimisation is that it's only guaranteed to find one local optimum. What's the problem with optimising a three parameter model like this?
 
 ```{r}
 model1 <- function(a, data) {
@@ -97,7 +101,7 @@ sim1_loess <- sim1 %>%
   add_residuals(model_loess)
 
 sim1_lm <- sim1 %>% 
-  add_residuals(sim1_mod)
+  add_residuals(model_sim1a)
 
 sim1_both <- 
   bind_rows(sim1_loess, sim1_lm, .id = "model") %>% 
@@ -211,7 +215,7 @@ mod2_matrix <- function(data) {
 mod2_matrix(sim3)
 ```
 
-4. For `sim4`, which of `mod1` and `mod2` is better? I think mod2 does a slightly better job at removing patterns, but itÅfs pretty subtle. Can you come up with a plot to support my claim?
+4. For `sim4`, which of `mod1` and `mod2` is better? I think mod2 does a slightly better job at removing patterns, but it's pretty subtle. Can you come up with a plot to support my claim?
 
 ```{r}
 mod1 <- lm(y ~ x1 + x2, data = sim4)
@@ -244,5 +248,3 @@ ggplot(sim4_resid, aes(x = x2, y = resid, color = model)) +
 ```
 
 In these plots we see that, faceting either by x1 or x2, and then plotting the residuals against the remaining continious variable, the model 2 (with interactions) does a better job at capturing existing patterns, while in model 1 we can still see some subtle patterns in the residuals.
-
-Continuar aca https://r4ds.had.co.nz/model-basics.html#exercises-62 
