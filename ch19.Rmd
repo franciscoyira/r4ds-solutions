@@ -1,13 +1,16 @@
 ---
-title: "Chapter 19 - Excersises - R for Data Science"
+title: "Chapter 19 - Exercises - R for Data Science"
 author: "Francisco Yira Albornoz"
-output: html_document
+output:
+  github_document:
+    toc: true
+    toc_depth: 4
+    df_print: tibble
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 
 # 19.2 When you should write a function
 
@@ -114,7 +117,7 @@ The second function `is_readable` returns `TRUE` when we have read permissions f
 
 They are both useful because their names communicates more clearly the intent of the code (versus using the code inside them without the function call).
 
-7. Read the complete lyrics to ÅgLittle Bunny Foo FooÅh. ThereÅfs a lot of duplication in this song. Extend the initial piping example to recreate the complete song, and use functions to reduce the duplication.
+7. Read the complete lyrics to "Little Bunny Foo Foo". There's a lot of duplication in this song. Extend the initial piping example to recreate the complete song, and use functions to reduce the duplication.
 
 The original song:
 
@@ -186,7 +189,7 @@ f3(1:10, 1:20)
 
 This function repeats (recycles) the input vector `y` until the output matches the length of the input vector `x`. Descriptive names for this function could be `make_eq_length`, `as_long_as`, `rep_until_same_length`.
 
-2. Take a function that youÅfve written recently and spend 5 minutes brainstorming a better name for it and its arguments.
+2. Take a function that you've written recently and spend 5 minutes brainstorming a better name for it and its arguments.
 
 ```{r}
 run_sql <- function(conn, path){
@@ -218,7 +221,7 @@ However, the common prefix could make more easy to miss the difference between t
 
 ## 19.4.4 Exercises
 
-1. WhatÅfs the difference between `if` and `ifelse()`? Carefully read the help and construct three examples that illustrate the key differences
+1. What's the difference between `if` and `ifelse()`? Carefully read the help and construct three examples that illustrate the key differences
 
 `ifelse()` is a vectorized control flow function, and allows using a condition vector (argument `test`) with length greater than 1. It will evaluate the condition element-wise, and pick elements from other two vectors (`yes` and `no`) depending on the result. The output will be a vector with the same properties than the condition vector (same dimension and class).
 
@@ -255,13 +258,13 @@ ifelse(animals == "dog",
        "not sure")
 ```
 
-2. Write a greeting function that says Åggood morningÅh, Åggood afternoonÅh, or Åggood eveningÅh, depending on the time of day. (Hint: use a time argument that defaults to lubridate::now(). That will make it easier to test your function.)
+2. Write a greeting function that says "good morning", "good afternoon", or "good evening", depending on the time of day. (Hint: use a time argument that defaults to lubridate::now(). That will make it easier to test your function.)
 
 ```{r}
 greeting <- function(time = lubridate::now()) {
-  if (hour(time) <= 12) {
+  if (lubridate::hour(time) <= 12) {
     "Good morning"
-  } else if (hour(time) <= 18) {
+  } else if (lubridate::hour(time) <= 18) {
     "Good afternoon"
   } else {
     "Good evening"
@@ -271,7 +274,7 @@ greeting <- function(time = lubridate::now()) {
 greeting()
 ```
 
-3. Implement a `fizzbuzz` function. It takes a single number as input. If the number is divisible by three, it returns ÅgfizzÅh. If itÅfs divisible by five it returns ÅgbuzzÅh. If itÅfs divisible by three and five, it returns ÅgfizzbuzzÅh. Otherwise, it returns the number. Make sure you first write working code before you create the function.
+3. Implement a `fizzbuzz` function. It takes a single number as input. If the number is divisible by three, it returns "fizz". If it's divisible by five it returns "buzz". If it's divisible by three and five, it returns "fizzbuzz". Otherwise, it returns the number. Make sure you first write working code before you create the function.
 
 ```{r}
 fizzbuzz <- function(x) {
@@ -289,7 +292,7 @@ fizzbuzz <- function(x) {
 ```
 4. How could you use `cut()` to simplify this set of nested if-else statements?
 
-```{r}
+```{r, eval=F, echo=T}
 if (temp <= 0) {
   "freezing"
 } else if (temp <= 10) {
@@ -302,16 +305,18 @@ if (temp <= 0) {
   "hot"
 }
 ```
-```{r}
+
+
+```{r, eval=F, echo=T}
 cut(
   temp,
   breaks = c(-Inf, 0, 10, 20, 30, Inf),
   labels = c("freezing", "cold", "cool", "warm", "hot")
   )
 ```
-How would you change the call to `cut()` if IÅfd used < instead of <=?
+How would you change the call to `cut()` if I'd used < instead of <=?
 
-```{r}
+```{r, eval=F, echo=T}
 cut(
   temp,
   breaks = c(-Inf, 0, 10, 20, 30, Inf),
@@ -327,9 +332,9 @@ What is the other chief advantage of `cut()` for this problem? (Hint: what happe
 
 It returns the element in the corresponding position in the list of alternatives (i.e. a `3` wil return the third element of the list, even if there is another one named `3`).
 
-6. What does this `switch()` call do? What happens if `x` is ÅgeÅh?
+6. What does this `switch()` call do? What happens if `x` is "e"?
 
-```{r}
+```{r, eval=F, echo=T}
 switch(x, 
   a = ,
   b = "ab",
@@ -347,14 +352,14 @@ Documentation says that if the matching element is missing, then the next one is
 
 It throws an error. The `...` argument in `commas` passes all the arguments (including `collapse  = "-"`) to `...` inside `stringr::str_c`. This causes duplication of values for the argument `collapse` inside `str_c`, and then the function doesn't know which one to use.
 
-```{r}
+```{r, eval=F, echo=T}
 commas <- function(...) stringr::str_c(..., collapse = ", ")
 
 commas(letters, collapse = "-")
 ```
 
 
-2. ItÅfd be nice if you could supply multiple characters to the `pad` argument, e.g. `rule("Title", pad = "-+")`. Why doesnÅft this currently work? How could you fix it?
+2. It'd be nice if you could supply multiple characters to the `pad` argument, e.g. `rule("Title", pad = "-+")`. Why doesn't this currently work? How could you fix it?
 
 It doesn't work because the function calculates the number of repetitions asuming that `pad` has length of 1, so if we use multiple arguments in the argument we will get a result of more than one line due to the extra characters.
 
