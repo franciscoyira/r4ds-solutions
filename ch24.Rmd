@@ -1,5 +1,5 @@
 ---
-title: "Chapter 23 - Exercises - R for Data Science"
+title: "Chapter 24 - Exercises - R for Data Science"
 author: "Francisco Yira Albornoz"
 date: "December 13th, 2018"
 output:
